@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>ImgGen - Generate Random Images</title>
+  <link rel="icon" type="image/png" href="fav.png">
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"
+    integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <header>
+    <nav>
+      <h1>Random Image Generator</h1>
+    </nav>
+
+  </header>
+  <div id="main_card" class="card">
+    <form action="/search" id="search_form" method="post">
+      <input type="text" id="search_bar" name="search_bar" placeholder="Search...">
+      <input type="button" onclick="generate()" value="">
+
+    </form>
+    <div id="img_div"> </div>
+
+
+    <div id="button_cont">
+      <button class="btns" id="generate_btn" onclick="generate()">Generate</button>
+      <button class="btns" id="download_btn" onclick="download()">Download</button>
+    </div>
+  </div>
+  <script>
+
+    let search_bar = document.getElementById('search_bar');
+    let img_url = "";
+    let img_div = document.getElementById('img_div');
+
+    let lottie_cont = '<div id="hello_cont"></div>'
+    img_div.innerHTML = lottie_cont;
+    let anim = lottie.loadAnimation({
+      container: document.getElementById('hello_cont'),
+      autoplay: true,
+      renderer: 'svg',
+      path: 'hello_lottie.json',
+      loop: true
+    })
+
+
+    const generate = () => {
+      let lottie_cont = '<div id="lottie_cont"></div>'
+      img_div.innerHTML = lottie_cont;
+      let anim = lottie.loadAnimation({
+        container: document.getElementById('lottie_cont'),
+        autoplay: true,
+        renderer: 'svg',
+        path: 'loading.json',
+        loop: true
+      })
+
+
+      let term = search_bar.value;
+      const apiUrl = `https://source.unsplash.com/random/?${term}`;
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          img_url = response.url;
+          return response.blob(); // Get the image as a Blob
+        })
+        .then(blob => {
+          // Create an object URL for the Blob
+          const imageUrl = URL.createObjectURL(blob);
+          let element = '<img src="" alt= ""id="image_cont"/>'
+          img_div.innerHTML = element;
+
+          // Use the imageUrl as needed, e.g., display it on the page
+          const imgElement = document.getElementById('image_cont');
+          imgElement.src = imageUrl;
+
+
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    async function download() {
+      if (document.getElementById('image_cont')) {
+
+        console.log('downloading')
+        let a = document.createElement('a');
+        document.body.appendChild(a);
+
+
+
+        const image = await fetch(img_url)
+        const imageBlog = await image.blob()
+        const imageURL = URL.createObjectURL(imageBlog)
+
+        const link = document.createElement('a')
+        link.href = imageURL
+        link.download = `${search_bar.value}-ImgGen`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      }
+
+    }
+    document.getElementById('search_form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      generate();
+    })
+  </script>
+</body>
+
+</html>
