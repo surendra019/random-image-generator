@@ -1,6 +1,6 @@
 ImgGen - A simple random image genertor tool made using HTML, CSS and NodeJs<br>
 
-![](https://github.com/surendra019/random-image-generator/blob/main/GIF.gif)
+![](https://github.com/surendra019/random-image-generator/blob/main/GIF2.gif)
 
 # How to use:
 use ```npm install```<br>
