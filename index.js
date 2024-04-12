@@ -17,4 +17,4 @@ app.post(("/search"), (req, res)=>{
     res.end();
     // res.responseCode(204).end();
 });
-app.listen(4000);
+app.listen(process.env.PORT || 4000);
